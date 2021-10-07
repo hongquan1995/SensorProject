@@ -1,0 +1,5 @@
+Com_RS485.c:18:6:RS485_Direct_on	8	static
+Com_RS485.c:22:6:RS485_Direct_off	8	static
+Com_RS485.c:27:10:ModRTU_CRC	32	static
+Com_RS485.c:49:9:Master_Read_Modbus	32	static
+Com_RS485.c:82:9:Master_Write_Modbus	32	static

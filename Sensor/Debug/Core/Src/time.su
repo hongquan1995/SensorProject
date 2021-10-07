@@ -1,0 +1,11 @@
+time.c:41:6:fncStringhandler	24	static
+time.c:49:6:takeTime	16	static
+time.c:58:6:delete_rtc	4	static
+time.c:66:6:convertTime	16	static
+time.c:93:6:HAL_TIM_PeriodElapsedCallback	16	static
+time.c:118:6:set_alarm_A	16	static
+time.c:137:6:get_rtc_data	8	static
+time.c:143:6:set_rtc_data	8	static
+time.c:150:6:packet_rtc_data	16	static
+time.c:156:6:Set_Frequency_Send_Data	24	static
+time.c:176:6:HAL_RTC_AlarmAEventCallback	16	static

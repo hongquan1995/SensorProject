@@ -1,0 +1,2 @@
+mqtt.c:13:6:mqtt_connect	248	static
+mqtt.c:28:6:mqtt_publish	336	static

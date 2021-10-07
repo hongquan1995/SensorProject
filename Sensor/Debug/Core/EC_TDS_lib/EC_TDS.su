@@ -1,0 +1,5 @@
+EC_TDS.c:23:6:getTemperature	32	static
+EC_TDS.c:44:6:getElectricalCond	32	static
+EC_TDS.c:60:6:getSALINITY	32	static
+EC_TDS.c:76:6:getTDS	32	static
+EC_TDS.c:92:6:getECRAWAD	32	static
