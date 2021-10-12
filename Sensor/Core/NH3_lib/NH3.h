@@ -9,8 +9,8 @@
 #define NH3_LIB_NH3_H_
 
 #define 		REG_ADDRESS_NH3							0x2000
-#define			REG_ADDRESS_TEMP						0x2004
-#define			REG_ADDRESS_HUMI						0x2006
+#define			REG_ADDRESS_TEMPNH3						0x2004
+#define			REG_ADDRESS_HUMINH3						0x2006
 #define			REG_ADDRESS_MAXRANGE					0x2008
 
 #define 		TRUE										1

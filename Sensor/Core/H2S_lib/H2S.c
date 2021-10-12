@@ -1,13 +1,14 @@
 /*
- * NH3.c
+ * H2S.c
  *
- *  Created on: Sep 24, 2021
+ *  Created on: Oct 11, 2021
  *      Author: 0
  */
 
+
 #include <ParseModbus.h>
 #include "stm32l4xx_hal.h"
-#include "NH3.h"
+#include "H2S.h"
 #include "Com_RS485.h"
 #include "my_lib.h"
 #include "string.h"
@@ -21,19 +22,19 @@ extern uint8_t buffer[256];
 
 
 // hàm nhận giá trị nhiệt độ cảm biến
-uint8_t getNH3TemperatureValue(float *data)
+uint8_t getH2STemperatureValue(float *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_NH3, FUNCODE_COMMON_NH3, REG_ADDRESS_TEMPNH3, LENGTH_DATA_TEMP);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_H2S, FUNCODE_COMMON_H2S, REG_ADDRESS_TEMPH2S, LENGTH_DATA_TEMPH2S);
 	if(result != HAL_OK){
 		return FALSE;
 		//my_printf("not send frame");
 	}
 	wait_receivedata(200);
 	 //wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_NH3, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_H2S, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
 		*data = *data / 100.0f;
@@ -42,19 +43,19 @@ uint8_t getNH3TemperatureValue(float *data)
 }
 
 // hàm nhận giá trị độ ẩm cảm biến
-uint8_t getNH3HumidityValue(float *data)
+uint8_t getH2SHumidityValue(float *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_NH3, FUNCODE_COMMON_NH3, REG_ADDRESS_HUMINH3, LENGTH_DATA_HUMI);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_H2S, FUNCODE_COMMON_H2S, REG_ADDRESS_HUMIH2S, LENGTH_DATA_HUMIH2S);
 	if(result != HAL_OK){
 		return FALSE;
 		//my_printf("not send frame");
 	}
 	//wait sensor send respond
 	wait_receivedata(200);
-	res = parserModbusRx(ADDRESS_SLAVE_NH3, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_H2S, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
 		*data = *data / 100.0f;
@@ -62,19 +63,19 @@ uint8_t getNH3HumidityValue(float *data)
 	}
 }
 
-// hàm nhận giá trị NH3 cảm biến
-uint8_t getNH3(float *data){
+// hàm nhận giá trị H2S cảm biến
+uint8_t getH2S(float *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_NH3, FUNCODE_COMMON_NH3, REG_ADDRESS_NH3, LENGTH_DATA_NH3);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_H2S, FUNCODE_COMMON_H2S, REG_ADDRESS_H2S, LENGTH_DATA_H2S);
 	if(result != HAL_OK){
 		return FALSE;
 		//my_printf("not send frame");
 	}
 	//wait sensor send respond
 	wait_receivedata(200);
-	res = parserModbusRx(ADDRESS_SLAVE_NH3, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_H2S, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		math_reverseBigLittleEndian(dataField, datalen);
 		memcpy(data, dataField, datalen);
