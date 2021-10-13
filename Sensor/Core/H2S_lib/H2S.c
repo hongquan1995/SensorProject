@@ -38,8 +38,8 @@ uint8_t getH2STemperatureValue(float *data)
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
 		*data = *data / 100.0f;
-		return TRUE;
 	}
+	return TRUE;
 }
 
 // hàm nhận giá trị độ ẩm cảm biến
@@ -59,8 +59,8 @@ uint8_t getH2SHumidityValue(float *data)
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
 		*data = *data / 100.0f;
-		return TRUE;
 	}
+	return TRUE;
 }
 
 // hàm nhận giá trị H2S cảm biến
@@ -79,6 +79,26 @@ uint8_t getH2S(float *data){
 	if(res != 0){
 		math_reverseBigLittleEndian(dataField, datalen);
 		memcpy(data, dataField, datalen);
-		return TRUE;
 	}
+	return TRUE;
+}
+
+// hàm nhận giá trị độ ẩm cảm biến
+uint8_t getH2SMaxrange(uint16_t *data)
+{
+	uint8_t res;
+	indexBuffer = 0;
+	memset(buffer, '\0', 256);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_H2S, FUNCODE_COMMON_H2S, REG_ADDRESS_RANGEH2S, LENGTH_DATA_RANGEH2S);
+	if(result != HAL_OK){
+		return FALSE;
+		//my_printf("not send frame");
+	}
+	//wait sensor send respond
+	wait_receivedata(200);
+	res = parserModbusRx(ADDRESS_SLAVE_H2S, buffer, indexBuffer, &datalen, dataField);
+	if(res != 0){
+		*data = dataField[0] <<8 | dataField[1];
+	}
+	return TRUE;
 }

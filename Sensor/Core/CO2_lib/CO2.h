@@ -20,6 +20,7 @@
 #define 		REG_ADDRESS_WARMUPTIME					0x0021
 
 
+
 #define 		TRUE										1
 #define			FALSE										0
 
@@ -31,8 +32,6 @@
 
 #define			LENGTH_DATA									1
 
-
-void getCO2(float *data);
 
 #endif /* CO2_LIB_CO2_H_ */
 

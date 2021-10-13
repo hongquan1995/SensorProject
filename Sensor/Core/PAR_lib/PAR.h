@@ -8,7 +8,7 @@
 #ifndef PAR_LIB_PAR_H_
 #define PAR_LIB_PAR_H_
 
-#define 		REG_ADDRESS_PAR							0x0000
+#define 		REG_ADDRESS_PAR							0x0001
 
 #define 		TRUE										1
 #define			FALSE										0

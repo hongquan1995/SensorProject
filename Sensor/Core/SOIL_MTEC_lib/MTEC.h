@@ -14,6 +14,19 @@
 #define			REG_ADDRESS_SALINITY							0x0003
 #define			REG_ADDRESS_TDS									0x0004
 #define			REG_ADDRESS_EPSILON								0x0005
+#define			REG_ADDRESS_SOILTYPE							0x0020
+#define			REG_ADDRESS_TEMPUNIT							0x0021
+#define			REG_ADDRESS_ECTEMPCOFF							0x0022
+#define			REG_ADDRESS_SALINITYCOFF						0x0023
+#define			REG_ADDRESS_TDSCOFF								0x0024
+#define			REG_ADDRESS_MODADDRESS							0x0200
+#define			REG_ADDRESS_BAUDRATE							0x0201
+#define			REG_ADDRESS_PROTOCOL							0x0202
+#define			REG_ADDRESS_PARITY								0x0203
+#define			REG_ADDRESS_DATABITS							0x0204
+#define			REG_ADDRESS_STOPBITS							0x0205
+#define			REG_ADDRESS_RESPONSEDELAY						0x0206
+#define			REG_ADDRESS_AOI									0x0207
 
 
 #define 		ADDRESS_SLAVE_MTEC								0x01

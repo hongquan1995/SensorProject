@@ -34,6 +34,6 @@ uint8_t getPAR(float *data){
 	res = parserModbusRx(ADDRESS_SLAVE_PAR, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
-		return TRUE;
 	}
+	return TRUE;
 }
