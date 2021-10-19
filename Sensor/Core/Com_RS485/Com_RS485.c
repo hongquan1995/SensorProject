@@ -13,7 +13,7 @@
 /*======================== Funcion Crc ======================*/
 
 uint8_t BUFF_DATA_485[256];
-extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart4;
 
 void RS485_Direct_on(){
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
@@ -70,15 +70,16 @@ uint8_t Master_Read_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data,
     BUFF_DATA_485[Count++] = (uint8_t) (crc>>8) & 0xFF;
 
     // Chon chan DE sang send
-    //RS485_Direct_on();
+    RS485_Direct_on();
     // Send
-    Result = HAL_UART_Transmit(&huart1, &BUFF_DATA_485[0], Count, 1000);
+    Result = HAL_UART_Transmit(&huart4, &BUFF_DATA_485[0], Count, 1000);
     //Dua DE ve Receive
-   // RS485_Direct_off();
+    RS485_Direct_off();
 
     return Result;
 }
 
+// write multiple register
 uint8_t Master_Write_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t LengthData, uint8_t* aData)
 {
     uint16_t crc;
@@ -108,15 +109,49 @@ uint8_t Master_Write_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data
     BUFF_DATA_485[Count++] = (uint8_t) (crc>>8) & 0xFF;
 
     // Chon chan DE sang send
-//    RS485_Direct_on();
+    RS485_Direct_on();
     // Send
-    Result = HAL_UART_Transmit(&huart1, &BUFF_DATA_485[0], Count, 1000);
+    Result = HAL_UART_Transmit(&huart4, &BUFF_DATA_485[0], Count, 1000);
     //Dua DE ve Receive
-//    RS485_Direct_off();
+    RS485_Direct_off();
 
     return Result;
 }
 
+// write single register
+uint8_t Master_SingleWrite_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint8_t* aData)
+{
+    uint16_t crc;
+    HAL_StatusTypeDef Result = HAL_ERROR;
+    uint16_t Count = 0;
+    uint16_t i = 0;
+
+    // Ðong goi frame
+    //1 byte Add Slave
+    BUFF_DATA_485[Count++] = Address;
+    //1 byte Funcode
+    BUFF_DATA_485[Count++] = FunCode;
+    //2 byte Add Data
+    BUFF_DATA_485[Count++] = (uint8_t) (Add_Data>>8) & 0xFF;
+    BUFF_DATA_485[Count++] = (uint8_t) (Add_Data & 0xFF);;
+    //2 byte data
+    for(i = 0; i < 2; i++)
+        BUFF_DATA_485[Count++] = *(aData + i);
+    //Tinh 2 byte Crc
+    crc = ModRTU_CRC(&BUFF_DATA_485[0],Count);
+    //them 2 byte crc
+    BUFF_DATA_485[Count++] = (uint8_t) (crc & 0xFF);
+    BUFF_DATA_485[Count++] = (uint8_t) (crc>>8) & 0xFF;
+
+    // Chon chan DE sang send
+    RS485_Direct_on();
+    // Send
+    Result = HAL_UART_Transmit(&huart4, &BUFF_DATA_485[0], Count, 1000);
+    //Dua DE ve Receive
+    RS485_Direct_off();
+
+    return Result;
+}
 
 
 /*======================== Funcion Slave ======================*/

@@ -64,7 +64,7 @@ uint8_t getH2SHumidityValue(float *data)
 }
 
 // hàm nhận giá trị H2S cảm biến
-uint8_t getH2S(float *data){
+uint8_t getH2S(uint32_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
@@ -77,8 +77,9 @@ uint8_t getH2S(float *data){
 	wait_receivedata(200);
 	res = parserModbusRx(ADDRESS_SLAVE_H2S, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		math_reverseBigLittleEndian(dataField, datalen);
-		memcpy(data, dataField, datalen);
+//		math_reverseBigLittleEndian(dataField, datalen);
+//		memcpy(data, dataField, datalen);
+		*data = dataField[2] << 24 | dataField[3] << 16 | dataField[0] << 8 | dataField[1];
 	}
 	return TRUE;
 }

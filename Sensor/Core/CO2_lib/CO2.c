@@ -25,7 +25,47 @@ uint8_t getCO2(uint16_t *data)
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_CO2, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_CO2, LENGTH_DATA_CO2);
+	if(result != HAL_OK){
+//		my_printf("not send frame");
+		return FALSE;
+	}
+//	wait_receivedata(200);
+	HAL_Delay(1000);
+	 //wait data respond
+	res = parserModbusRx(ADDRESS_SLAVE_CO2, buffer, indexBuffer, &datalen, dataField);
+	if(res != 0){
+		*data = dataField[0] <<8 | dataField[1];
+	}
+	return TRUE;
+}
+
+uint8_t getVERCO2(float *hard_ver, float *soft_ver)
+{
+	uint8_t res;
+	indexBuffer = 0;
+	memset(buffer, '\0', 256);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_VER_CO2, LENGTH_DATA_CO2);
+	if(result != HAL_OK){
+//		my_printf("not send frame");
+		return FALSE;
+	}
+	wait_receivedata(200);
+	 //wait data respond
+	res = parserModbusRx(ADDRESS_SLAVE_CO2, buffer, indexBuffer, &datalen, dataField);
+	if(res != 0){
+		*hard_ver = dataField[0] / 10.0f;
+		*soft_ver = dataField[1] / 10.0f;
+	}
+	return TRUE;
+}
+
+uint8_t getModSlaveAddCO2(uint16_t *data)
+{
+	uint8_t res;
+	indexBuffer = 0;
+	memset(buffer, '\0', 256);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_SLA_CO2, LENGTH_DATA_CO2);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
@@ -39,32 +79,12 @@ uint8_t getCO2(uint16_t *data)
 	return TRUE;
 }
 
-uint8_t getVERSION(uint8_t *hard_ver, uint8_t *soft_ver)
+uint8_t getBaudRateCO2(uint16_t *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_VER, LENGTH_DATA);
-	if(result != HAL_OK){
-//		my_printf("not send frame");
-		return FALSE;
-	}
-	wait_receivedata(200);
-	 //wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_CO2, buffer, indexBuffer, &datalen, dataField);
-	if(res != 0){
-		*hard_ver = dataField[0] / 10;
-		*soft_ver = dataField[1] / 10;
-	}
-	return TRUE;
-}
-
-uint8_t getMSADDRESS(uint16_t *data)
-{
-	uint8_t res;
-	indexBuffer = 0;
-	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_SLA, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_BAURATE_CO2, LENGTH_DATA_CO2);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
@@ -78,12 +98,12 @@ uint8_t getMSADDRESS(uint16_t *data)
 	return TRUE;
 }
 
-uint8_t getBRATE(uint16_t *data)
+uint8_t getParityCO2(uint16_t *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_BAURATE, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_PARITY_CO2, LENGTH_DATA_CO2);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
@@ -97,12 +117,12 @@ uint8_t getBRATE(uint16_t *data)
 	return TRUE;
 }
 
-uint8_t getPABITS(uint16_t *data)
+uint8_t getStopBitsCO2(uint16_t *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_PARITY, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_STOPBIT_CO2, LENGTH_DATA_CO2);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
@@ -116,12 +136,12 @@ uint8_t getPABITS(uint16_t *data)
 	return TRUE;
 }
 
-uint8_t getSTOBITS(uint16_t *data)
+uint8_t getModProtocolCO2(uint16_t *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_STOPBIT, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_PROTOCOL_CO2, LENGTH_DATA_CO2);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
@@ -135,12 +155,12 @@ uint8_t getSTOBITS(uint16_t *data)
 	return TRUE;
 }
 
-uint8_t getMODBUSPROTOCOL(uint16_t *data)
+uint8_t getDelayResponseCO2(uint16_t *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_PROTOCOL, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_DELAYRESPOND_CO2, LENGTH_DATA_CO2);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
@@ -154,31 +174,12 @@ uint8_t getMODBUSPROTOCOL(uint16_t *data)
 	return TRUE;
 }
 
-uint8_t getDELAYRESPONSE(uint16_t *data)
+uint8_t getWarmUpTimeCO2(uint16_t *data)
 {
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_DELAYRESPOND, LENGTH_DATA);
-	if(result != HAL_OK){
-//		my_printf("not send frame");
-		return FALSE;
-	}
-	wait_receivedata(200);
-	 //wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_CO2, buffer, indexBuffer, &datalen, dataField);
-	if(res != 0){
-		*data = dataField[0] <<8 | dataField[1];
-	}
-	return TRUE;
-}
-
-uint8_t getWARMUPTIME(uint16_t *data)
-{
-	uint8_t res;
-	indexBuffer = 0;
-	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_WARMUPTIME, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_CO2, FUNCODE_CO2_03, REG_ADDRESS_WARMUPTIME_CO2, LENGTH_DATA_CO2);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;

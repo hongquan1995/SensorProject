@@ -23,9 +23,16 @@
 #define			LENGTH_DATA_HUMIH2S							1
 #define			LENGTH_DATA_H2S								2
 
+typedef struct{
+	float vr_temp;
+	float vr_humi;
+	uint32_t vr_h2s;
+	uint16_t vr_maxRange;
+}read_sensorH2S_t;
 
 uint8_t getH2STemperatureValue(float *data);
 uint8_t getH2SHumidityValue(float *data);
-uint8_t getH2S(float *data);
+uint8_t getH2S(uint32_t *data);
+uint8_t getH2SMaxrange(uint16_t *data);
 
 #endif /* H2S_LIB_H2S_H_ */

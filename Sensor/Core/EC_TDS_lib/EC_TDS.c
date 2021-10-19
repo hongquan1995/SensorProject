@@ -20,18 +20,18 @@ extern uint8_t indexBuffer;
 extern uint8_t buffer[256];
 
 // hàm nhận giá trị nhiệt độ cảm biến
-uint8_t getTemperature(float *data){
+uint8_t getECTDSTemp(float *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TEMPERATURE, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TEMP_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	 //wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		if(dataField[0] != 0xFF){
 			*data = (dataField[0]*256+dataField[1])/100.0f;
@@ -43,38 +43,38 @@ uint8_t getTemperature(float *data){
 }
 
 // hàm nhận giá trị electrical conductivity
-uint8_t getElectricalCond(uint16_t *data){
+uint8_t getECTDSElectricalCond(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_EC, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_EC_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getSALINITY(uint16_t *data){
+uint8_t getECTDSalinity(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_SALINITY, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_SALINITY_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
@@ -83,268 +83,268 @@ uint8_t getTDS(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TDS, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TDS_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getECRAWAD(uint16_t *data){
+uint8_t getEcrawad(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_ECRAWAD, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_ECRAWAD_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getTEMPCOMPENSATEEN(uint16_t *data){
+uint8_t getECTDSTempCompen(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TEMPCOMPENSATEEN, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TEMPCOMPEN_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getECTEMPCOFF(uint16_t *data){
+uint8_t getEcTempCoff(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_ECTEMPCOFF, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_ECTEMPCOFF_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getSALINITYCOFF(uint16_t *data){
+uint8_t getECTDSalinitycoff(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_SALINITYCOFF, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_SALINICOFF_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getTDSCOFF(uint16_t *data){
+uint8_t getTDSCoff(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TDSCOFF, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TDSCOFF_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getELECTRODECONSTANT(uint16_t *data){
+uint8_t getECTDSelectroConst(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_ELECTRODECONSTANT, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_ELECTROCONST_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getSLAVEADDRESS(uint16_t *data){
+uint8_t getECTDSlaAddress(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_SLAVEADDRESS, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_SLAVEADD_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getBAUDRATE(uint16_t *data){
+uint8_t getECTDSBaudrate(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_BAUDRATE, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_BAUDRATE_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getPROTOCOL(uint16_t *data){
+uint8_t getECTDSProtocol(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_PROTOCOL, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_PROTOCOL_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getPARITY(uint16_t *data){
+uint8_t getECTDSParity(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_PARITY, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_PARITY_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getDATABITS(uint16_t *data){
+uint8_t getECTDSdatabits(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_DATABITS, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_DATABITS_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getSTOPBITS(uint16_t *data){
+uint8_t getECTDStopbits(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_STOPBITS, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_STOPBITS_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getRESPONSEDELAY(uint16_t *data){
+uint8_t getECTDSResponDelay(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_RESPONSEDELAY, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_RESPONDELAY_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
 
-uint8_t getACTIVEOUTPUTINTERVAL(uint16_t *data){
+uint8_t getECTDEAoi(uint16_t *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_EC_TDS, FUNCODE_EC_TDS_03, REG_ADDRESS_ACTIVEOUTPUTINTERVAL, LENGTH_DATA);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_AOI_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	//wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_EC_TDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1]);
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }

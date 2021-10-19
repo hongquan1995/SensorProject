@@ -25,6 +25,13 @@
 #include "my_lib.h"
 #include "L506.h"
 #include "NH3.h"
+#include "CO2.h"
+#include "EC_TDS.h"
+#include "H2S.h"
+#include "PAR.h"
+#include "PH.h"
+#include "MTEC.h"
+#include "test_libSensor.h"
 #include "string.h"
 #include "time.h"
 #include "UartRingbuffer.h"
@@ -50,6 +57,7 @@ RTC_HandleTypeDef hrtc;
 
 TIM_HandleTypeDef htim2;
 
+UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3;
 
@@ -57,12 +65,10 @@ UART_HandleTypeDef huart3;
 uint8_t data = 0;
 uint8_t indexBuffer = 0;
 uint8_t buffer[256];
-float temperature;
-float humidity;
-float nh3;
-uint8_t value;
+
 uint32_t Time_send_sv = 10;
-char arr[100];
+uint8_t buf_test[] = {0x00, 0x03};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -72,6 +78,11 @@ static void MX_USART1_UART_Init(void);
 static void MX_RTC_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_UART4_Init(void);
+
+//#define USE_FAKE_SENSOR 1 // khi dùng file config để test
+//#define USE_FAKE_SENSOR 0 // khi test với sensor thật
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -85,6 +96,7 @@ static void MX_TIM2_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -113,9 +125,10 @@ int main(void)
   MX_RTC_Init();
   MX_USART3_UART_Init();
   MX_TIM2_Init();
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_UART_Receive_IT(&huart1, &data, 1);
+  HAL_UART_Receive_IT(&huart4, &data, 1);
   HAL_TIM_Base_Start_IT(&htim2);
   Ringbuf_init(huart3);
 
@@ -123,19 +136,30 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  Master_Write_Modbus (0x0F, 0x10, 0x2004, 1, buf_test);
-	  value = getNH3TemperatureValue(&temperature);
-	  if(value != 0){
-		  sprintf(arr, "Temperature NH3: %0.2f\r\n", temperature);
-	  }
+	   test_CO2();
+	   test_ECTDS();
+	   test_H2S();
+	   test_NH3();
+	   test_PAR();
+	   test_PH();
+	   test_mtec();
 
-	  Sim_work();
-	  Packet_Data_SendToServer(arr, strlen(arr), Time_send_sv);
+	  HAL_Delay(1000);
+//	  Master_Write_Modbus (0x01, 0x10, 0x0200, 1, buf_test);
+//	  Master_SingleWrite_Modbus (0x01, 0x06, 0x0100, buf_test);
+//	  HAL_Delay(1000);
+//	  if(value != 0){
+//		  sprintf(Sensor, "Temperature NH3: %0.|f\r\n", temperature);
+//	  }
+
+//	  Sim_work();
+//	  Packet_Data_SendToServer(Rtc, Sensor, strlen(Rtc), strlen(Sensor), Time_send_sv);
   }
   /* USER CODE END 3 */
 }
@@ -176,9 +200,10 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USART1
-                              |RCC_PERIPHCLK_USART3;
+                              |RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_UART4;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
   PeriphClkInit.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
+  PeriphClkInit.Uart4ClockSelection = RCC_UART4CLKSOURCE_PCLK1;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -319,6 +344,41 @@ static void MX_TIM2_Init(void)
 }
 
 /**
+  * @brief UART4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_UART4_Init(void)
+{
+
+  /* USER CODE BEGIN UART4_Init 0 */
+
+  /* USER CODE END UART4_Init 0 */
+
+  /* USER CODE BEGIN UART4_Init 1 */
+
+  /* USER CODE END UART4_Init 1 */
+  huart4.Instance = UART4;
+  huart4.Init.BaudRate = 9600;
+  huart4.Init.WordLength = UART_WORDLENGTH_8B;
+  huart4.Init.StopBits = UART_STOPBITS_1;
+  huart4.Init.Parity = UART_PARITY_NONE;
+  huart4.Init.Mode = UART_MODE_TX_RX;
+  huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart4.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart4.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart4.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART4_Init 2 */
+
+  /* USER CODE END UART4_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -438,13 +498,11 @@ static void MX_GPIO_Init(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if(huart->Instance == USART1)
+	if(huart->Instance == UART4)
 	{
-		if(data != 0){
 		buffer[indexBuffer] = data;
 		indexBuffer++;
-		HAL_UART_Receive_IT(&huart1, &data, 1);
-		}
+		HAL_UART_Receive_IT(&huart4, &data, 1);
 	}
 }
 /* USER CODE END 4 */
