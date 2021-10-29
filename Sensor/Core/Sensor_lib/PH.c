@@ -6,12 +6,12 @@
  */
 
 #include "PH.h"
-
 #include "stm32l4xx_hal.h"
 #include <ParseModbus.h>
 #include "Com_RS485.h"
 #include "my_lib.h"
 #include "string.h"
+
 
 uint8_t datalen;
 uint8_t dataField[256];
@@ -57,7 +57,7 @@ uint8_t getPH(uint16_t *data){
 	//wait data respond
 	res = parserModbusRx(ADDRESS_SLAVE_PH, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
-		*data = (dataField[0]*256+dataField[1])/100.0f;
+		*data = dataField[0]*256+dataField[1];
 	}
 	return TRUE;
 }
@@ -278,6 +278,23 @@ uint8_t getPHAOI(uint16_t *data){
 	return TRUE;
 }
 
+uint8_t writePHSlvAddress(uint16_t *addReg, uint16_t *data){
+	uint8_t res;
+	indexBuffer = 0;
+	memset(buffer, '\0', 256);
+	result = Master_SingleWrite_Modbus(ADDRESS_SLAVE_PH_DF, FUNCODE_EC_PH_06, REG_ADDRESS_SLAVEADD_PH, ADDRESS_SLAVE_PH);
+	if(result != HAL_OK){
+		return FALSE;
+	}
+	wait_receivedata(200);
+	//wait data respond
+	res = parserModbusRx(ADDRESS_SLAVE_PH_DF, buffer, indexBuffer, &datalen, dataField);
+	if(res != 0){
+		*addReg = dataField[0]<<8|dataField[1];
+		*data = dataField[2]<<8|dataField[3];
+	}
+	return TRUE;
+}
 //uint8_t getMultiPHdata(uint16_t *data, uint8_t lenData, uint16_t Add_Data){
 //	uint8_t res;
 //		indexBuffer = 0;

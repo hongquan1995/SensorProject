@@ -25,6 +25,7 @@
 #define 		REG_ADDRESS_RESPONDELAY_PH						0x0206
 #define 		REG_ADDRESS_AOI_PH								0x0207
 
+#define 		ADDRESS_SLAVE_PH_DF								0x01
 #define 		ADDRESS_SLAVE_PH								0x02
 #define			FUNCODE_EC_PH_03								0x03
 #define			FUNCODE_EC_PH_04								0x04
@@ -64,5 +65,6 @@ uint8_t getPHDatabits(uint16_t *data);
 uint8_t getPHStopbits(uint16_t *data);
 uint8_t getPHResponsedelay(uint16_t *data);
 uint8_t getPHAOI(uint16_t *data);
+uint8_t writePHSlvAddress(uint16_t *addReg, uint16_t *data);
 
 #endif /* PH_LIB_PH_H_ */

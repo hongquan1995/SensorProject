@@ -24,6 +24,7 @@
 #define 		TRUE										1
 #define			FALSE										0
 
+#define 		ADDRESS_SLAVE_CO2_DF						0x01
 #define 		ADDRESS_SLAVE_CO2							0x04
 #define			FUNCODE_CO2_03								0x03
 #define			FUNCODE_CO2_04								0x04
@@ -54,6 +55,7 @@ uint8_t getStopBitsCO2(uint16_t *data);
 uint8_t getModProtocolCO2(uint16_t *data);
 uint8_t getDelayResponseCO2(uint16_t *data);
 uint8_t getWarmUpTimeCO2(uint16_t *data);
+uint8_t writeCO2SlvAddress(uint16_t *addReg, uint16_t *data);
 
 #endif /* CO2_LIB_CO2_H_ */
 

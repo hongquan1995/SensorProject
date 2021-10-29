@@ -68,6 +68,7 @@ uint8_t buffer[256];
 
 uint32_t Time_send_sv = 10;
 uint8_t buf_test[] = {0x00, 0x03};
+uint16_t vr_addReg, vr_data;
 
 /* USER CODE END PV */
 
@@ -79,10 +80,6 @@ static void MX_RTC_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_UART4_Init(void);
-
-//#define USE_FAKE_SENSOR 1 // khi dùng file config để test
-//#define USE_FAKE_SENSOR 0 // khi test với sensor thật
-
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -96,7 +93,6 @@ static void MX_UART4_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
-
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -142,15 +138,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	   test_CO2();
-	   test_ECTDS();
-	   test_H2S();
-	   test_NH3();
-	   test_PAR();
-	   test_PH();
-	   test_mtec();
-
-	  HAL_Delay(1000);
+//	   test_CO2();
+//	   test_ECTDS();
+//	   test_H2S();
+//	   test_NH3();
+//	   test_PAR();
+//	   test_PH();
+//	   test_mtec();
+//	   test_turb();
+//	   test_chlor();
+//	  writeECTDSlvAddress(&vr_addReg, &vr_data);
+//	  writeCO2SlvAddress(&vr_addReg, &vr_data);
+//	  HAL_Delay(1000);
 //	  Master_Write_Modbus (0x01, 0x10, 0x0200, 1, buf_test);
 //	  Master_SingleWrite_Modbus (0x01, 0x06, 0x0100, buf_test);
 //	  HAL_Delay(1000);

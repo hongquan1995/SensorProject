@@ -36,7 +36,6 @@ uint8_t getNH3TemperatureValue(float *data)
 	res = parserModbusRx(ADDRESS_SLAVE_NH3, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
-		*data = *data / 100.0f;
 	}
 	return TRUE;
 }
@@ -57,7 +56,6 @@ uint8_t getNH3HumidityValue(float *data)
 	res = parserModbusRx(ADDRESS_SLAVE_NH3, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
-		*data = *data / 100.0f;
 	}
 	return TRUE;
 }

@@ -30,6 +30,7 @@
 #define			REG_ADDRESS_AOI_ECTDS							0x0207
 
 #define 		ADDRESS_SLAVE_ECTDS								0x03
+#define 		ADDRESS_SLAVE_ECTDS_DF							0x01
 #define			FUNCODE_EC_TDS_03								0x03
 #define			FUNCODE_EC_TDS_04								0x04
 #define			FUNCODE_EC_TDS_06								0x06
@@ -76,5 +77,6 @@ uint8_t getECTDSdatabits(uint16_t *data);
 uint8_t getECTDStopbits(uint16_t *data);
 uint8_t getECTDSResponDelay(uint16_t *data);
 uint8_t getECTDEAoi(uint16_t *data);
+uint8_t writeECTDSlvAddress(uint16_t *addReg, uint16_t *data);
 
 #endif /* EC_TDS_LIB_EC_TDS_H_ */

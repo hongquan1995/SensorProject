@@ -28,7 +28,7 @@
 #define			REG_ADDRESS_RESPONDELAY_MTEC					0x0206
 #define			REG_ADDRESS_AOI_MTEC							0x0207
 
-
+#define 		ADDRESS_SLAVE_MTEC_DF							0x01
 #define 		ADDRESS_SLAVE_MTEC								0x06
 #define			FUNCODE_MTEC_03									0x03
 #define			FUNCODE_MTEC_04									0x04
@@ -77,5 +77,6 @@ uint8_t getDATABITSsoil(uint16_t *data);
 uint8_t getSTOPBITSsoil(uint16_t *data);
 uint8_t getRESPONSEDELAYsoil(uint16_t *data);
 uint8_t getAOIsoil(uint16_t *data);
+uint8_t writeMTECSlvAddress(uint16_t *addReg, uint16_t *data);
 
 #endif /* SOIL_MTEC_LIB_MTEC_H_ */

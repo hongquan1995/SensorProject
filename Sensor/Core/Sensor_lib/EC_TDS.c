@@ -24,20 +24,20 @@ uint8_t getECTDSTemp(float *data){
 	uint8_t res;
 	indexBuffer = 0;
 	memset(buffer, '\0', 256);
-	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS, FUNCODE_EC_TDS_03, REG_ADDRESS_TEMP_ECTDS, LENGTH_DATA_ECTDS);
+	result = Master_Read_Modbus(ADDRESS_SLAVE_ECTDS_DF, FUNCODE_EC_TDS_03, REG_ADDRESS_TEMP_ECTDS, LENGTH_DATA_ECTDS);
 	if(result != HAL_OK){
 //		my_printf("not send frame");
 		return FALSE;
 	}
 	wait_receivedata(200);
 	 //wait data respond
-	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS_DF, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		if(dataField[0] != 0xFF){
-			*data = (dataField[0]*256+dataField[1])/100.0f;
+			*data = dataField[0]*256+dataField[1];
 		}
 		else
-			*data = ((0xFF*256+dataField[1])-0xFFFF-0x01)/100.0f;
+			*data = (0xFF*256+dataField[1])-0xFFFF-0x01;
 	}
 	return TRUE;
 }
@@ -345,6 +345,24 @@ uint8_t getECTDEAoi(uint16_t *data){
 	res = parserModbusRx(ADDRESS_SLAVE_ECTDS, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0]*256+dataField[1];
+	}
+	return TRUE;
+}
+
+uint8_t writeECTDSlvAddress(uint16_t *addReg, uint16_t *data){
+	uint8_t res;
+	indexBuffer = 0;
+	memset(buffer, '\0', 256);
+	result = Master_SingleWrite_Modbus(ADDRESS_SLAVE_ECTDS_DF, FUNCODE_EC_TDS_06, REG_ADDRESS_SLAVEADD_ECTDS, ADDRESS_SLAVE_ECTDS);
+	if(result != HAL_OK){
+		return FALSE;
+	}
+	wait_receivedata(200);
+	//wait data respond
+	res = parserModbusRx(ADDRESS_SLAVE_ECTDS_DF, buffer, indexBuffer, &datalen, dataField);
+	if(res != 0){
+		*addReg = dataField[0]<<8|dataField[1];
+		*data = dataField[2]<<8|dataField[3];
 	}
 	return TRUE;
 }

@@ -13,6 +13,7 @@
 #include "PAR.h"
 #include "PH.h"
 #include "MTEC.h"
+#include "TURB.h"
 
 uint8_t ret;
 read_sensorCO2_t dat_Co2;
@@ -21,7 +22,8 @@ read_sensorH2S_t dat_h2s;
 read_sensornNH3_t dat_nh3;
 read_sensorPh_t dat_ph;
 read_sensorMtec_t dat_mtec;
-
+read_sensorTurb_t dat_turb;
+read_sensorChlor_t dat_chlor;
 extern float dataPAR;
 
 void test_CO2(){
@@ -48,6 +50,7 @@ void test_CO2(){
 		my_printf("receive data successfully");
 	  else
 		my_printf("not receive data");
+
 	  ret = getParityCO2(&dat_Co2.vr_parityBits);
 	  if(ret != 0)
 		my_printf("receive data successfully");
@@ -439,6 +442,208 @@ void test_mtec(){
 		my_printf("not receive data");
 
 	ret = getAOIsoil(&dat_mtec.vr_aoi);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+}
+
+void test_turb(){
+	ret = getTURBmeasure(&dat_turb.vr_measure);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBWorkingState(&dat_turb.vr_workingstate);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBAdc(&dat_turb.vr_adc);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFirstCalib(&dat_turb.vr_firstcalib);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFirstAdc(&dat_turb.vr_firstadc);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBSecondCalib(&dat_turb.vr_secondcalib);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBSecondAdc(&dat_turb.vr_secondadc);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBThirdCalib(&dat_turb.vr_thirdcalib);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBThirdAdc(&dat_turb.vr_thirdadc);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFaFirstCal(&dat_turb.vr_fafirstcal);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFaFirstAdc(&dat_turb.vr_fafirstadc);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFaSecondCal(&dat_turb.vr_fasecondcal);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFaSecondAdc(&dat_turb.vr_fasecondadc);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFaThirdCal(&dat_turb.vr_fathirdcal);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBFaThirdAdc(&dat_turb.vr_fathirdadc);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getTURBDeviceAdd(&dat_turb.vr_devideadd);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+}
+
+void test_chlor(){
+	ret = getCHloMeasure(&dat_chlor.vr_measure);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloTemperature(&dat_chlor.vr_temperature);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloOuputVal(&dat_chlor.vr_outputval);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloWarning(&dat_chlor.vr_warning);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloUpperMeasure(&dat_chlor.vr_uppermeasure);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloLowerMeasure(&dat_chlor.vr_lowermeasure);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloUpperTemp(&dat_chlor.vr_uppertemp);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloLowerTemp(&dat_chlor.vr_lowertemp);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloMesOffset(&dat_chlor.vr_mesoffset);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloTempOffset(&dat_chlor.vr_tempoffset);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloDampCoeff(&dat_chlor.vr_dampcoeff);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloAddSlave(&dat_chlor.vr_addslave);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloBaudrate(&dat_chlor.vr_baudrate);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloStandSolution(&dat_chlor.vr_standsolution);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloPhCompen(&dat_chlor.vr_phcompen);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloManualTemp(&dat_chlor.vr_manualtemp);
+	if(ret != 0)
+		my_printf("receive data successfully");
+	else
+		my_printf("not receive data");
+
+	ret = getCHloMeasureAd(&dat_chlor.vr_measuread);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else

@@ -30,8 +30,8 @@ uint8_t getCO2(uint16_t *data)
 //		my_printf("not send frame");
 		return FALSE;
 	}
-//	wait_receivedata(200);
-	HAL_Delay(1000);
+	wait_receivedata(200);
+//	HAL_Delay(1000);
 	 //wait data respond
 	res = parserModbusRx(ADDRESS_SLAVE_CO2, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
@@ -189,6 +189,24 @@ uint8_t getWarmUpTimeCO2(uint16_t *data)
 	res = parserModbusRx(ADDRESS_SLAVE_CO2, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
+	}
+	return TRUE;
+}
+
+uint8_t writeCO2SlvAddress(uint16_t *addReg, uint16_t *data){
+	uint8_t res;
+	indexBuffer = 0;
+	memset(buffer, '\0', 256);
+	result = Master_SingleWrite_Modbus(ADDRESS_SLAVE_CO2_DF, FUNCODE_CO2_06, REG_ADDRESS_SLA_CO2, ADDRESS_SLAVE_CO2);
+	if(result != HAL_OK){
+		return FALSE;
+	}
+	wait_receivedata(200);
+	//wait data respond
+	res = parserModbusRx(ADDRESS_SLAVE_CO2_DF, buffer, indexBuffer, &datalen, dataField);
+	if(res != 0){
+		*addReg = dataField[0]<<8|dataField[1];
+		*data = dataField[2]<<8|dataField[3];
 	}
 	return TRUE;
 }

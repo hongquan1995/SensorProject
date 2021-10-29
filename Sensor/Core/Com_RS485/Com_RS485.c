@@ -119,12 +119,11 @@ uint8_t Master_Write_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data
 }
 
 // write single register
-uint8_t Master_SingleWrite_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint8_t* aData)
+uint8_t Master_SingleWrite_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t Data)
 {
     uint16_t crc;
     HAL_StatusTypeDef Result = HAL_ERROR;
     uint16_t Count = 0;
-    uint16_t i = 0;
 
     // Ðong goi frame
     //1 byte Add Slave
@@ -135,8 +134,8 @@ uint8_t Master_SingleWrite_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Ad
     BUFF_DATA_485[Count++] = (uint8_t) (Add_Data>>8) & 0xFF;
     BUFF_DATA_485[Count++] = (uint8_t) (Add_Data & 0xFF);;
     //2 byte data
-    for(i = 0; i < 2; i++)
-        BUFF_DATA_485[Count++] = *(aData + i);
+    BUFF_DATA_485[Count++] = (uint8_t) (Data>>8) & 0xFF;
+    BUFF_DATA_485[Count++] = (uint8_t) (Data & 0xFF);;
     //Tinh 2 byte Crc
     crc = ModRTU_CRC(&BUFF_DATA_485[0],Count);
     //them 2 byte crc

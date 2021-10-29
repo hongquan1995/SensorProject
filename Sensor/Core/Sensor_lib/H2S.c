@@ -37,7 +37,6 @@ uint8_t getH2STemperatureValue(float *data)
 	res = parserModbusRx(ADDRESS_SLAVE_H2S, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
-		*data = *data / 100.0f;
 	}
 	return TRUE;
 }
@@ -58,7 +57,6 @@ uint8_t getH2SHumidityValue(float *data)
 	res = parserModbusRx(ADDRESS_SLAVE_H2S, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = dataField[0] <<8 | dataField[1];
-		*data = *data / 100.0f;
 	}
 	return TRUE;
 }

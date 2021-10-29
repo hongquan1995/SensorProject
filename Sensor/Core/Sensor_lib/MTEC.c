@@ -34,10 +34,10 @@ uint8_t getTEMPsoil(float *data){
 	res = parserModbusRx(ADDRESS_SLAVE_MTEC, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		if(dataField[0] != 0xFF){
-			*data = (dataField[0]*256+dataField[1])/100.0f;
+			*data = dataField[0]*256+dataField[1];
 		}
 		else
-			*data = ((0xFF*256+dataField[1])-0xFFFF-0x01)/100.0f;
+			*data = (0xFF*256+dataField[1])-0xFFFF-0x01;
 	}
 	return TRUE;
 }
@@ -346,6 +346,24 @@ uint8_t getAOIsoil(uint16_t *data){
 	res = parserModbusRx(ADDRESS_SLAVE_MTEC, buffer, indexBuffer, &datalen, dataField);
 	if(res != 0){
 		*data = (dataField[0]*256+dataField[1]);
+	}
+	return TRUE;
+}
+
+uint8_t writeMTECSlvAddress(uint16_t *addReg, uint16_t *data){
+	uint8_t res;
+	indexBuffer = 0;
+	memset(buffer, '\0', 256);
+	result = Master_SingleWrite_Modbus(ADDRESS_SLAVE_MTEC_DF, FUNCODE_MTEC_06, REG_ADDRESS_MODADDRESS_MTEC, ADDRESS_SLAVE_MTEC);
+	if(result != HAL_OK){
+		return FALSE;
+	}
+	wait_receivedata(200);
+	//wait data respond
+	res = parserModbusRx(ADDRESS_SLAVE_MTEC_DF, buffer, indexBuffer, &datalen, dataField);
+	if(res != 0){
+		*addReg = dataField[0]<<8|dataField[1];
+		*data = dataField[2]<<8|dataField[3];
 	}
 	return TRUE;
 }
