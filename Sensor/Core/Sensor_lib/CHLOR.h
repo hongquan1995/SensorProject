@@ -29,15 +29,34 @@
 #define 		REG_ADDRESS_SLOPECALIB							0x003F
 #define 		REG_ADDRESS_MEASUREAD							0x0066
 
-#define			ADDRESS_SLAVE_CHLOR_DF							0x01
-#define			ADDRESS_SLAVE_CHLOR								0x08
-#define			FUNCODE_CHLOR_03								0x03
-#define			FUNCODE_CHLOR_04								0x04
-#define			FUNCODE_CHLOR_06								0x06
-#define			FUNCODE_CHLOR_16								0x10
+#define			ADDRESS_SLAVE_CHLOR								0x07
+
 
 #define			LENGTH_DATA_INT										1
 #define			LENGTH_DATA_FLOAT									2
+
+typedef enum {
+	CLOR_MEASUREMENTS,
+	CLOR_TEMPMEASURE,
+	CLOR_OUTPUTVAL,
+	CLOR_WARNING,
+	CLOR_UPPERMEASURE,
+	CLOR_LOWERMEASURE,
+	CLOR_UPPERTEMP,
+	CLOR_LOWERTEMP,
+	CLOR_MEASOFFSET,
+	CLOR_TEMPOFFSET,
+	CLOR_DAMPCOEFF,
+	CLOR_ADDSLAVE_CHLO,
+	CLOR_BAUDRATE_CHLO,
+	CLOR_RESTORE,
+	CLOR_STANDSOLU,
+	CLOR_PHCOMPEN,
+	CLOR_MANUALTEMP,
+	CLOR_ZEROCALIB,
+	CLOR_SLOPECALIB,
+	CLOR_MEASUREAD,
+}CHLOR_ID;
 
 typedef struct{
 	float vr_measure;
@@ -59,22 +78,7 @@ typedef struct{
 	uint16_t vr_measuread;
 }read_sensorChlor_t;
 
-uint8_t getCHloMeasure(float *data);
-uint8_t getCHloTemperature(float *data);
-uint8_t getCHloOuputVal(float *data);
-uint8_t getCHloWarning(uint16_t *data);
-uint8_t getCHloUpperMeasure(float *data);
-uint8_t getCHloLowerMeasure(float *data);
-uint8_t getCHloUpperTemp(float *data);
-uint8_t getCHloLowerTemp(float *data);
-uint8_t getCHloMesOffset(float *data);
-uint8_t getCHloTempOffset(float *data);
-uint8_t getCHloDampCoeff(uint16_t *data);
-uint8_t getCHloAddSlave(uint16_t *data);
-uint8_t getCHloBaudrate(uint16_t *data);
-uint8_t getCHloStandSolution(float *data);
-uint8_t getCHloPhCompen(float *data);
-uint8_t getCHloManualTemp(float *data);
-uint8_t getCHloMeasureAd(uint16_t *data);
+void Clor_getFloatData(uint8_t *rawData, float *vrData);
+void Clor_getIntData(uint8_t *rawData, uint16_t *vrData);
 
 #endif /* SENSOR_LIB_CHLOR_H_ */

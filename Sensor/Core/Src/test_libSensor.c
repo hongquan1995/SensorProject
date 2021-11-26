@@ -14,7 +14,8 @@
 #include "PH.h"
 #include "MTEC.h"
 #include "TURB.h"
-
+#include "CHLOR.h"
+#include "ParseSensor.h"
 uint8_t ret;
 read_sensorCO2_t dat_Co2;
 read_sensorEcTds_t dat_ectds;
@@ -25,6 +26,8 @@ read_sensorMtec_t dat_mtec;
 read_sensorTurb_t dat_turb;
 read_sensorChlor_t dat_chlor;
 extern float dataPAR;
+extern SENSORS Chlorine[];
+extern SENSORS Turbidity[];
 
 void test_CO2(){
 	  ret = getCO2(&dat_Co2.vr_CO2);
@@ -448,202 +451,202 @@ void test_mtec(){
 		my_printf("not receive data");
 }
 
-void test_turb(){
-	ret = getTURBmeasure(&dat_turb.vr_measure);
+void test_read_turb(){
+	ret = getSensorData(Turbidity, 0, (RETURN_VAL*)&dat_turb.vr_devideadd, RET_U16);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBWorkingState(&dat_turb.vr_workingstate);
+	ret = getSensorData(Turbidity, 1, (RETURN_VAL*)&dat_turb.vr_measure, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBAdc(&dat_turb.vr_adc);
+	ret = getSensorData(Turbidity, 2, (RETURN_VAL*)&dat_turb.vr_workingstate, RET_U16);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFirstCalib(&dat_turb.vr_firstcalib);
+	ret = getSensorData(Turbidity, 3, (RETURN_VAL*)&dat_turb.vr_adc, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFirstAdc(&dat_turb.vr_firstadc);
+	ret = getSensorData(Turbidity, 4, (RETURN_VAL*)&dat_turb.vr_firstcalib, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBSecondCalib(&dat_turb.vr_secondcalib);
+	ret = getSensorData(Turbidity, 5, (RETURN_VAL*)&dat_turb.vr_firstadc, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBSecondAdc(&dat_turb.vr_secondadc);
+	ret = getSensorData(Turbidity, 6, (RETURN_VAL*)&dat_turb.vr_secondcalib, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBThirdCalib(&dat_turb.vr_thirdcalib);
+	ret = getSensorData(Turbidity, 7, (RETURN_VAL*)&dat_turb.vr_secondadc, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBThirdAdc(&dat_turb.vr_thirdadc);
+	ret = getSensorData(Turbidity, 8, (RETURN_VAL*)&dat_turb.vr_thirdcalib, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFaFirstCal(&dat_turb.vr_fafirstcal);
+	ret = getSensorData(Turbidity, 9, (RETURN_VAL*)&dat_turb.vr_thirdadc, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFaFirstAdc(&dat_turb.vr_fafirstadc);
+	ret = getSensorData(Turbidity, 10, (RETURN_VAL*)&dat_turb.vr_fafirstcal, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFaSecondCal(&dat_turb.vr_fasecondcal);
+	ret = getSensorData(Turbidity, 11, (RETURN_VAL*)&dat_turb.vr_fafirstadc, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFaSecondAdc(&dat_turb.vr_fasecondadc);
+	ret = getSensorData(Turbidity, 12, (RETURN_VAL*)&dat_turb.vr_fasecondcal, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFaThirdCal(&dat_turb.vr_fathirdcal);
+	ret = getSensorData(Turbidity, 13, (RETURN_VAL*)&dat_turb.vr_fasecondadc, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBFaThirdAdc(&dat_turb.vr_fathirdadc);
+	ret = getSensorData(Turbidity, 14, (RETURN_VAL*)&dat_turb.vr_thirdcalib, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getTURBDeviceAdd(&dat_turb.vr_devideadd);
+	ret = getSensorData(Turbidity, 15, (RETURN_VAL*)&dat_turb.vr_thirdadc, RET_U32);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 }
 
-void test_chlor(){
-	ret = getCHloMeasure(&dat_chlor.vr_measure);
+void test_read_chlor(){
+	ret = getSensorData(Chlorine, 0, (RETURN_VAL*)&dat_chlor.vr_measure, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloTemperature(&dat_chlor.vr_temperature);
+	ret = getSensorData(Chlorine, 1, (RETURN_VAL*)&dat_chlor.vr_temperature, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloOuputVal(&dat_chlor.vr_outputval);
+	ret = getSensorData(Chlorine, 2, (RETURN_VAL*)&dat_chlor.vr_outputval, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloWarning(&dat_chlor.vr_warning);
+	ret = getSensorData(Chlorine, 3, (RETURN_VAL*)&dat_chlor.vr_warning, RET_U16);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloUpperMeasure(&dat_chlor.vr_uppermeasure);
+	ret = getSensorData(Chlorine, 4, (RETURN_VAL*)&dat_chlor.vr_uppermeasure, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloLowerMeasure(&dat_chlor.vr_lowermeasure);
+	ret = getSensorData(Chlorine, 5, (RETURN_VAL*)&dat_chlor.vr_lowermeasure, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloUpperTemp(&dat_chlor.vr_uppertemp);
+	ret = getSensorData(Chlorine, 6, (RETURN_VAL*)&dat_chlor.vr_uppertemp, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloLowerTemp(&dat_chlor.vr_lowertemp);
+	ret = getSensorData(Chlorine, 7, (RETURN_VAL*)&dat_chlor.vr_lowertemp, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloMesOffset(&dat_chlor.vr_mesoffset);
+	ret = getSensorData(Chlorine, 8, (RETURN_VAL*)&dat_chlor.vr_mesoffset, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloTempOffset(&dat_chlor.vr_tempoffset);
+	ret = getSensorData(Chlorine, 9, (RETURN_VAL*)&dat_chlor.vr_tempoffset, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloDampCoeff(&dat_chlor.vr_dampcoeff);
+	ret = getSensorData(Chlorine, 10, (RETURN_VAL*)&dat_chlor.vr_dampcoeff, RET_U16);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloAddSlave(&dat_chlor.vr_addslave);
+	ret = getSensorData(Chlorine, 11, (RETURN_VAL*)&dat_chlor.vr_addslave, RET_U16);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloBaudrate(&dat_chlor.vr_baudrate);
+	ret = getSensorData(Chlorine, 12, (RETURN_VAL*)&dat_chlor.vr_baudrate, RET_U16);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloStandSolution(&dat_chlor.vr_standsolution);
+	ret = getSensorData(Chlorine, 14, (RETURN_VAL*)&dat_chlor.vr_standsolution, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloPhCompen(&dat_chlor.vr_phcompen);
+	ret = getSensorData(Chlorine, 15, (RETURN_VAL*)&dat_chlor.vr_phcompen, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloManualTemp(&dat_chlor.vr_manualtemp);
+	ret = getSensorData(Chlorine, 16, (RETURN_VAL*)&dat_chlor.vr_manualtemp, RET_FLOAT);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else
 		my_printf("not receive data");
 
-	ret = getCHloMeasureAd(&dat_chlor.vr_measuread);
+	ret = getSensorData(Chlorine, 19, (RETURN_VAL*)&dat_chlor.vr_measuread, RET_U16);
 	if(ret != 0)
 		my_printf("receive data successfully");
 	else

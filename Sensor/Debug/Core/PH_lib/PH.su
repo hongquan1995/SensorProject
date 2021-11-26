@@ -1,0 +1,14 @@
+PH.c:24:9:getPHTemperature	32	static
+PH.c:47:9:getPH	32	static
+PH.c:65:9:getPHTemcompensateen	32	static
+PH.c:83:9:getPHCalibrawad0	32	static
+PH.c:101:9:getPHCalibrawad1	32	static
+PH.c:119:9:getPHCalibrawad2	32	static
+PH.c:137:9:getPHSlaveaddress	32	static
+PH.c:155:9:getPHBaudrate	32	static
+PH.c:173:9:getPHProtocol	32	static
+PH.c:191:9:getPHParity	32	static
+PH.c:209:9:getPHDatabits	32	static
+PH.c:227:9:getPHStopbits	32	static
+PH.c:245:9:getPHResponsedelay	32	static
+PH.c:263:9:getPHAOI	32	static

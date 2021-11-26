@@ -46,7 +46,7 @@ uint16_t ModRTU_CRC(uint8_t* buf, int len)
 }
 
 /*======================== Funcion Master ======================*/
-uint8_t Master_Read_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t LengthData)
+uint8_t Master_Read_Modbus(uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t LengthData)
 {
     uint16_t crc;
     HAL_StatusTypeDef Result = HAL_ERROR;
@@ -75,12 +75,11 @@ uint8_t Master_Read_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data,
     Result = HAL_UART_Transmit(&huart4, &BUFF_DATA_485[0], Count, 1000);
     //Dua DE ve Receive
     RS485_Direct_off();
-
     return Result;
 }
 
 // write multiple register
-uint8_t Master_Write_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t LengthData, uint8_t* aData)
+uint8_t Master_MultiWrite_Modbus(uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t LengthData, uint8_t* aData)
 {
     uint16_t crc;
     HAL_StatusTypeDef Result = HAL_ERROR;
@@ -119,7 +118,7 @@ uint8_t Master_Write_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data
 }
 
 // write single register
-uint8_t Master_SingleWrite_Modbus (uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t Data)
+uint8_t Master_SingleWrite_Modbus(uint8_t Address, uint8_t FunCode, uint16_t Add_Data, uint16_t Data)
 {
     uint16_t crc;
     HAL_StatusTypeDef Result = HAL_ERROR;

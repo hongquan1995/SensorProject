@@ -26,8 +26,7 @@
 #define			REG_ADDRESS_FATHIRDADC							0x00BE
 
 
-#define			ADDRESS_SLAVE_TURB_DF						0x01
-#define			ADDRESS_SLAVE_TURB							0x07
+#define			ADDRESS_SLAVE_TURB							0x03
 #define			FUNCODE_TURB_03								0x03
 #define			FUNCODE_TURB_04								0x04
 #define			FUNCODE_TURB_06								0x06
@@ -55,21 +54,7 @@ typedef struct{
 	uint16_t vr_devideadd;
 }read_sensorTurb_t;
 
-uint8_t getTURBmeasure(uint32_t *data);
-uint8_t getTURBWorkingState(uint16_t *data);
-uint8_t getTURBAdc(uint32_t *data);
-uint8_t getTURBFirstCalib(uint32_t *data);
-uint8_t getTURBFirstAdc(uint32_t *data);
-uint8_t getTURBSecondCalib(uint32_t *data);
-uint8_t getTURBSecondAdc(uint32_t *data);
-uint8_t getTURBThirdCalib(uint32_t *data);
-uint8_t getTURBThirdAdc(uint32_t *data);
-uint8_t getTURBFaFirstCal(uint32_t *data);
-uint8_t getTURBFaFirstAdc(uint32_t *data);
-uint8_t getTURBFaSecondCal(uint32_t *data);
-uint8_t getTURBFaSecondAdc(uint32_t *data);
-uint8_t getTURBFaThirdCal(uint32_t *data);
-uint8_t getTURBFaThirdAdc(uint32_t *data);
-uint8_t getTURBDeviceAdd(uint16_t *data);
+void Turb_getInt16Data(uint8_t *rawData, uint16_t *vrData);
+void Turb_getInt32Data(uint8_t *rawData, uint32_t *vrData);
 
 #endif /* SENSOR_LIB_TURB_H_ */

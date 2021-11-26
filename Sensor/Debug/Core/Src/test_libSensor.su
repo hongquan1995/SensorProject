@@ -1,0 +1,7 @@
+test_libSensor.c:27:6:test_CO2	8	static
+test_libSensor.c:82:6:test_ECTDS	8	static
+test_libSensor.c:192:6:test_H2S	8	static
+test_libSensor.c:218:6:test_NH3	8	static
+test_libSensor.c:244:6:test_PAR	8	static
+test_libSensor.c:252:6:test_PH	8	static
+test_libSensor.c:338:6:test_mtec	8	static

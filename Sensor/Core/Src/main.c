@@ -31,6 +31,8 @@
 #include "PAR.h"
 #include "PH.h"
 #include "MTEC.h"
+#include "CHLOR.h"
+#include "parseSensor.h"
 #include "test_libSensor.h"
 #include "string.h"
 #include "time.h"
@@ -67,8 +69,10 @@ uint8_t indexBuffer = 0;
 uint8_t buffer[256];
 
 uint32_t Time_send_sv = 10;
-uint8_t buf_test[] = {0x00, 0x03};
-uint16_t vr_addReg, vr_data;
+uint8_t buf_test[] = {0x00, 0x00, 0x041, 0x00};
+float vr_phpen = 0;
+uint16_t value;
+extern SENSORS Chlorine[];
 
 /* USER CODE END PV */
 
@@ -126,7 +130,7 @@ int main(void)
 
   HAL_UART_Receive_IT(&huart4, &data, 1);
   HAL_TIM_Base_Start_IT(&htim2);
-  Ringbuf_init(huart3);
+//  Ringbuf_init(huart3);
 
   /* USER CODE END 2 */
 
@@ -145,14 +149,12 @@ int main(void)
 //	   test_PAR();
 //	   test_PH();
 //	   test_mtec();
-//	   test_turb();
-//	   test_chlor();
-//	  writeECTDSlvAddress(&vr_addReg, &vr_data);
-//	  writeCO2SlvAddress(&vr_addReg, &vr_data);
-//	  HAL_Delay(1000);
-//	  Master_Write_Modbus (0x01, 0x10, 0x0200, 1, buf_test);
-//	  Master_SingleWrite_Modbus (0x01, 0x06, 0x0100, buf_test);
-//	  HAL_Delay(1000);
+	   test_read_turb();
+	   test_read_chlor();
+//	   writeSensorData16(Chlorine, CLOR_PHCOMPEN, buf_test);
+//	   writeSensorData6(Chlorine, CLOR_DAMPCOEFF, 5);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_3);
+	  HAL_Delay(1000);
 //	  if(value != 0){
 //		  sprintf(Sensor, "Temperature NH3: %0.|f\r\n", temperature);
 //	  }
@@ -180,7 +182,13 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 1;
+  RCC_OscInitStruct.PLL.PLLN = 8;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -189,12 +197,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
   {
     Error_Handler();
   }
@@ -458,17 +466,17 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_3, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3|GPIO_PIN_8, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_3, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PC3 */
   GPIO_InitStruct.Pin = GPIO_PIN_3;
@@ -476,6 +484,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB0 PB3 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_3;
@@ -487,8 +502,8 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin : PA8 */
   GPIO_InitStruct.Pin = GPIO_PIN_8;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }

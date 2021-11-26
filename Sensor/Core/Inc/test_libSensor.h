@@ -15,7 +15,7 @@ void test_NH3();
 void test_PAR();
 void test_PH();
 void test_mtec();
-void test_turb();
-void test_chlor();
+void test_read_turb();
+void test_read_chlor();
 
 #endif /* INC_TEST_LIBSENSOR_H_ */

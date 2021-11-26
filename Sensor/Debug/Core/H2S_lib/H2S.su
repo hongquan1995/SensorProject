@@ -1,0 +1,4 @@
+H2S.c:25:9:getH2STemperatureValue	32	static
+H2S.c:46:9:getH2SHumidityValue	32	static
+H2S.c:67:9:getH2S	32	static
+H2S.c:88:9:getH2SMaxrange	32	static

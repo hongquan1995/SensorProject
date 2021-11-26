@@ -1,0 +1,10 @@
+10:18:16 **** Incremental Build of configuration Debug for project Sensor ****
+make -j8 all 
+arm-none-eabi-size   Sensor.elf 
+   text	   data	    bss	    dec	    hex	filename
+  45224	    488	   4088	  49800	   c288	Sensor.elf
+Finished building: default.size.stdout
+ 
+
+10:18:16 Build Finished. 0 errors, 0 warnings. (took 277ms)
+
