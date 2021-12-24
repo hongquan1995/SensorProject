@@ -18,26 +18,27 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <SOIL_MTEC.h>
 #include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "my_lib.h"
-#include "L506.h"
 #include "NH3.h"
 #include "CO2.h"
 #include "EC_TDS.h"
 #include "H2S.h"
 #include "PAR.h"
 #include "PH.h"
-#include "MTEC.h"
 #include "CHLOR.h"
-#include "parseSensor.h"
+#include "ParseModbus.h"
 #include "test_libSensor.h"
 #include "string.h"
 #include "time.h"
-#include "UartRingbuffer.h"
 #include "stdio.h"
+#include "UartRingbuffer.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,11 +64,14 @@ UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3;
 
+osThreadId task_simHandle;
+osThreadId blinkLedHandle;
+osThreadId Task_SensorHandle;
 /* USER CODE BEGIN PV */
-uint8_t data = 0;
-uint8_t indexBuffer = 0;
-uint8_t buffer[256];
+struct_string gsm_uart;
+struct_string gsm_sensor;
 
+int flag_gsm = 0;
 uint32_t Time_send_sv = 10;
 uint8_t buf_test[] = {0x00, 0x00, 0x041, 0x00};
 float vr_phpen = 0;
@@ -84,12 +88,17 @@ static void MX_RTC_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_UART4_Init(void);
+void initialSim(void const * argument);
+void TaskLed(void const * argument);
+void sensor_read(void const * argument);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
 
 /* USER CODE END 0 */
 
@@ -128,12 +137,50 @@ int main(void)
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_UART_Receive_IT(&huart4, &data, 1);
+  HAL_UART_Receive_IT(&huart4, &gsm_sensor.data, 1);
+  HAL_UART_Receive_IT(&huart3, &gsm_uart.data, 1);
   HAL_TIM_Base_Start_IT(&htim2);
-//  Ringbuf_init(huart3);
+  Ringbuf_init(huart3);
 
   /* USER CODE END 2 */
 
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* definition and creation of task_sim */
+  osThreadDef(task_sim, initialSim, osPriorityNormal, 0, 256);
+  task_simHandle = osThreadCreate(osThread(task_sim), NULL);
+
+  /* definition and creation of blinkLed */
+  osThreadDef(blinkLed, TaskLed, osPriorityNormal, 0, 128);
+  blinkLedHandle = osThreadCreate(osThread(blinkLed), NULL);
+
+  /* definition and creation of Task_Sensor */
+  osThreadDef(Task_Sensor, sensor_read, osPriorityNormal, 0, 256);
+  Task_SensorHandle = osThreadCreate(osThread(Task_Sensor), NULL);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
@@ -142,19 +189,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	   test_CO2();
-//	   test_ECTDS();
-//	   test_H2S();
-//	   test_NH3();
-//	   test_PAR();
-//	   test_PH();
-//	   test_mtec();
-	   test_read_turb();
-	   test_read_chlor();
-//	   writeSensorData16(Chlorine, CLOR_PHCOMPEN, buf_test);
-//	   writeSensorData6(Chlorine, CLOR_DAMPCOEFF, 5);
-	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_3);
-	  HAL_Delay(1000);
+//	  HAL_UART_Transmit(&huart1,"quan", 4, 1000);
+//	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_3);
+//	  HAL_Delay(1000);
 //	  if(value != 0){
 //		  sprintf(Sensor, "Temperature NH3: %0.|f\r\n", temperature);
 //	  }
@@ -182,13 +219,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 8;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -197,12 +228,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
     Error_Handler();
   }
@@ -512,14 +543,101 @@ static void MX_GPIO_Init(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if(huart->Instance == UART4)
-	{
-		buffer[indexBuffer] = data;
-		indexBuffer++;
-		HAL_UART_Receive_IT(&huart4, &data, 1);
-	}
+		if(huart->Instance == UART4)
+		{
+			gsm_sensor.buffer[gsm_sensor.buffer_index] = gsm_sensor.data;
+			gsm_sensor.buffer_index++;
+			HAL_UART_Receive_IT(&huart4, &gsm_sensor.data, 1);
+		}
+		if(huart->Instance == USART3)
+		{
+			if(gsm_uart.data != 0){
+				gsm_uart.buffer[gsm_uart.buffer_index] = gsm_uart.data;
+				gsm_uart.buffer_index++;
+				HAL_UART_Receive_IT(&huart3, &gsm_uart.data, 1);
+			}
+		}
 }
+
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN Header_initialSim */
+/**
+  * @brief  Function implementing the task_sim thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_initialSim */
+void initialSim(void const * argument)
+{
+  /* USER CODE BEGIN 5 */
+  /* Infinite loop */
+  for(;;)
+  {
+    Sim_work();
+  }
+  /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_TaskLed */
+/**
+* @brief Function implementing the blinkLed thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_TaskLed */
+void TaskLed(void const * argument)
+{
+  /* USER CODE BEGIN TaskLed */
+  /* Infinite loop */
+  for(;;)
+  {
+//    osDelay(1000);
+//    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_3);
+  }
+  /* USER CODE END TaskLed */
+}
+
+/* USER CODE BEGIN Header_sensor_read */
+/**
+* @brief Function implementing the Task_Sensor thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_sensor_read */
+void sensor_read(void const * argument)
+{
+  /* USER CODE BEGIN sensor_read */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+//    test_read_turb();
+//    test_read_chlor();
+  }
+  /* USER CODE END sensor_read */
+}
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM6 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM6) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
